@@ -27,7 +27,7 @@ Once the installation is complete, restart your machine!
 ------------------------------------------------------------------------
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/UncleJ1ck/Ubunter/main/img/ubunter.png?token=AMNMHHNLJBKM3RMZMSQRJCLBCBU4S">
+<img src="https://raw.githubusercontent.com/UncleJ1ck/Ubunter/main/img/ubunter.png?token=AMNMHHNSUL5KMEJILVT3PGTBCBVVG">
 
 ------------------------------------------------------------------------
   
