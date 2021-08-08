@@ -20,6 +20,9 @@ Open the terminal and type following commands
 
 * `sudo ./ubunter.sh`
 
+
+After the installation has finished, reboot your machine !
+
 ------------------------------------------------------------------------
 
 <p align="center">
