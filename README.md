@@ -23,7 +23,7 @@ Open the terminal and type following commands
 ------------------------------------------------------------------------
 
 <p align="center">
-<img src="https://i.ibb.co/pnjgkt3/reporter.png">
+<img src="https://raw.githubusercontent.com/UncleJ1ck/Ubunter/main/img/ubunter.png?token=AMNMHHNLJBKM3RMZMSQRJCLBCBU4S">
 
 ------------------------------------------------------------------------
   
