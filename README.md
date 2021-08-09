@@ -33,4 +33,4 @@ Once the installation is complete, restart your machine!
   
 # Note 
   
-I can update the script over time 
+Tested on Ubuntu 20.04
