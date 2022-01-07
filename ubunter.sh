@@ -140,7 +140,7 @@ prerequisites() {
     echo
     echo "[!]Installation of ruby and its requirements"
     echo
-    apt-get install -y ruby-full bundler 
+    apt-get install -y ruby-full rubygems libgemplugin-ruby
     echo
     echo "[!]Installation of gems"
     echo
