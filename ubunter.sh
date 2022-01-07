@@ -62,15 +62,13 @@ prerequisites() {
     echo
     cd ~
     sh -c "echo 'deb https://http.kali.org/kali kali-rolling main non-free contrib' > /etc/apt/sources.list.d/kali.list"
-    apt update
+    sudo apt update
     apt install -y gnupg
     wget 'https://archive.kali.org/archive-key.asc'
     apt-key add archive-key.asc
-    sudo sh -c "echo 'Package: *'>/etc/apt/preferences.d/kali.pref; echo 'Pin: release a=kali-rolling'>>/etc/apt/preferences.d/kali.pref; echo 'Pin-Priority: 50'>>/etc/apt/preferences.d/kali.pref"
-    echo "deb http://http.kali.org/kali kali-rolling main non-free contrib" | sudo tee /etc/apt/sources.list
-    echo "deb http://http.kali.org/kali kali-last-snapshot main non-free contrib" | sudo tee /etc/apt/sources.list
-    echo "deb http://http.kali.org/kali kali-experimental main non-free contrib" | sudo tee -a /etc/apt/sources.list
-    apt-get install kali-tools-crypto-stego kali-tools-gpu kali-tools-fuzzing kali-tools-bluetooth kali-tools-sdr kali-tools-voip 
+    apt-get -y update 
+    sh -c "echo 'Package: *'>/etc/apt/preferences.d/kali.pref; echo 'Pin: release a=kali-rolling'>>/etc/apt/preferences.d/kali.pref; echo 'Pin-Priority: 50'>>/etc/apt/preferences.d/kali.pref"
+    apt-get install kali-tools-crypto-stego kali-tools-gpu  
     apt update -y
 
     echo
@@ -142,7 +140,7 @@ prerequisites() {
     echo
     echo "[!]Installation of ruby and its requirements"
     echo
-    apt-get install -y ruby-full ruby-dev bundler ruby-all-dev
+    apt-get install -y ruby-full bundler 
     echo
     echo "[!]Installation of gems"
     echo
