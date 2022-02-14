@@ -48,29 +48,24 @@ prerequisites() {
     echo
     echo "[!]System updates"
     echo
-    apt-get install tlp tlp-rdw
+    apt-get install tlp tlp-rdw software-properties-common preload
     tlp start
-    apt-get -y update 
-    apt install -y software-properties-common
-    apt install -y preload
-    apt-get -y full-upgrade -y
-    apt-get dist-upgrade -y
-    apt autoremove -y
+
 
     echo 
     echo "[!]Package installation"
     echo
-    cd ~
-    sh -c "echo 'deb https://http.kali.org/kali kali-rolling main non-free contrib' > /etc/apt/sources.list.d/kali.list"
-    sudo apt update
+    cd /tmp
+    apt update
     apt install -y gnupg
+    sh -c "echo 'deb https://http.kali.org/kali kali-rolling main non-free contrib' > /etc/apt/sources.list.d/kali.list"
     wget 'https://archive.kali.org/archive-key.asc'
-    apt-key add archive-key.asc
-    apt-get -y update 
+    apt-key add archive-key.asc 
     sh -c "echo 'Package: *'>/etc/apt/preferences.d/kali.pref; echo 'Pin: release a=kali-rolling'>>/etc/apt/preferences.d/kali.pref; echo 'Pin-Priority: 50'>>/etc/apt/preferences.d/kali.pref"
-    apt-get install kali-tools-crypto-stego kali-tools-gpu  
-    apt update -y
-
+    apt-get -y update
+    
+    
+    cd ~
     echo
     echo "[!]Removal of default useless apps."
     echo
@@ -89,6 +84,9 @@ prerequisites() {
     apt-get install -f
     apt-get clean
     apt-get update 
+    apt-get -y full-upgrade -y
+    apt-get dist-upgrade -y
+    apt autoremove -y 
     ;;
 
     n | N) 
@@ -108,8 +106,12 @@ prerequisites() {
     echo 'Error: zsh is not installed.' >&2
     echo "Installing zsh..."
     echo
+    cd ~
     apt-get install -y zsh zsh-syntax-highlighting zsh-autosuggestions
-    usermod -s /usr/bin/zsh $(whoami)
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    wget https://raw.githubusercontent.com/OscarAkaElvis/zsh-parrot-theme/master/install.zsh
+    ./install.zsh 
+    echo "You can add more plugins to your zsh like zsh autosuggestions / .. "
     fi
     ;;
 
@@ -129,25 +131,24 @@ prerequisites() {
     echo "[!]Changing your ubuntu theme"
     echo
     snap install orchis-themes
-    for i in $(snap connections | grep gtk-common-themes:gtk-3-themes | awk '{print $2}'); do snap connect $i orchis-themes:gtk-3-themes; done
     snap install tela-icons
-    apt install gnome-shell-extensions
-    gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
-    gsettings set org.gnome.desktop.interface gtk-theme "Orchis-grey-dark"
-    gsettings set org.gnome.desktop.wm.preferences theme "Orchis-grey-dark"
-    gsettings set org.gnome.desktop.interface icon-theme "Orchis-grey-dark"
-    
+    for i in $(snap connections | grep gtk-common-themes:gtk-3-themes | awk '{print $2}'); do sudo snap connect $i orchis-themes:gtk-3-themes; done
+    apt install gnome-shell-extensions gnome-tweak-tool
+    gsettings set org.gnome.shell.extensions.dash-to-dock extend-height BOTTOM
+    gsettings set org.gnome.desktop.interface gtk-theme "Orchis-dark"
+    gsettings set org.gnome.desktop.wm.preferences theme "Orchis-dark"
+    gsettings set org.gnome.desktop.interface icon-theme "Tela-black"
+    echo "at the end you can go to 'Tweaks' and choose your theme in Appearance!"
     echo
     echo "[!]Installation of ruby and its requirements"
     echo
-    apt-get install -y ruby-full rubygems libgemplugin-ruby
+    apt-get install -y ruby-full ruby
     echo
     echo "[!]Installation of gems"
     echo
     gem update --system
     gem install bundler 
     bundle install
-    gem install activerecord-oracle_enhanced-adapter 
     gem install clipboard  
     gem install coffee-script 
     gem install colorize 
@@ -198,7 +199,7 @@ prerequisites() {
     echo 
     echo "[*]installation of java-requirements"
     echo
-    apt-get install default-jdk default-jre oracle-java8-installer openjdk-11-jdk openjdk-11-jre-headless
+    apt-get install default-jdk default-jre default-jdk openjdk-11-jdk openjdk-11-jre-headless
     echo
     echo "[*]installation of php-requirements"
     echo
@@ -207,17 +208,17 @@ prerequisites() {
     echo
     echo "[*]installation of dev libs"
     echo
-    apt-get install -y libappindicator1 postgresql-server-dev-all libpq-dev libpcap-dev libsqlite3-dev libperl5.32 libnfc5 libreadline-dev samba-libs libcapstone3 libcapstone-dev libssl-dev zlib1g-dev libxml2-dev libxslt1-dev libyaml-dev libffi-dev libssh-dev libpq-dev libsqlite-dev libsqlite3-dev libpcap-dev libgmp3-dev libpcap-dev  libpcre3-dev libidn11-dev libcurl4-openssl-dev build-essential gcc g++ 
+    apt-get install -y dpkg-dev pkg-config libc6 postgresql-common postgresql-server-dev-12 libappindicator1 postgresql-server-dev-all libpq-dev libpcap-dev libsqlite3-dev libnfc5 libreadline-dev samba-libs libcapstone3 libcapstone-dev libssl-dev zlib1g-dev libxml2-dev libxslt1-dev libyaml-dev libffi-dev libssh-dev libpq-dev libsqlite-dev libsqlite3-dev libpcap-dev libgmp3-dev libpcap-dev  libpcre3-dev libidn11-dev libcurl4-openssl-dev build-essential gcc g++ 
 
     echo
     echo "[*]installation of libs"
     echo
-    apt-get install -y libpq5 libreadline5 libjs-sphinxdoc libwbclient0 libappindicator1 libindicator7 build-essential libreadline-dev libssl-dev libpq5 libpq-dev libreadline5 libsqlite3-dev libpcap-dev git-core autoconf postgresql pgadmin3 curl zlib1g-dev libxml2-dev libxslt1-dev libyaml-dev curl zlib1g-dev gawk bison libffi-dev libgdbm-dev libncurses5-dev libtool sqlite3 libgmp-dev gnupg2 dirmngr libnss3 libxss1 libssl1.0.0 libncurses5-dev libncurses5 build-essential libreadline-dev libssl-dev libpq5 libpq-dev libreadline5 libsqlite3-dev libpcap-dev git-core autoconf postgresql pgadmin3 curl zlib1g-dev libxml2-dev libxslt1-dev libyaml-dev curl zlib1g-dev mdk4 xterm gawk bison libffi-dev hcxdumptool libgdbm-dev libncurses5-dev hcxpcapngtool libtool sqlite3 libgmp-dev gnupg2 dirmngr 
-    
+    apt-get install -y libpq5 libgcrypt20 libc6 libstdc++6 libc6 libndpi4.0 libatkmm-1.6-1v5 libreadline5 libjs-sphinxdoc libwbclient0 libappindicator1 libindicator7 build-essential libreadline-dev libssl-dev libpq5 libpq-dev libreadline5 libsqlite3-dev libpcap-dev git autoconf postgresql pgadmin3 curl zlib1g-dev libxml2-dev libxslt1-dev libyaml-dev curl zlib1g-dev gawk bison libffi-dev libgdbm-dev libncurses5-dev libtool sqlite3 libgmp-dev gnupg2 dirmngr libnss3 libxss1 libncurses5-dev libncurses5 build-essential libreadline-dev libssl-dev libpq5 libpq-dev libreadline5 libsqlite3-dev libpcap-dev git-core autoconf postgresql pgadmin3 curl zlib1g-dev libxml2-dev libxslt1-dev libyaml-dev curl zlib1g-dev mdk4 xterm gawk bison libffi-dev hcxdumptool libgdbm-dev libncurses5-dev libtool sqlite3 libgmp-dev gnupg2 dirmngr 
+
     echo
     echo "[*]installation of perl"
     echo
-    sudo apt-get install -y perl
+    sudo apt-get install -y libdbd-mysql-perl perl
     sudo apt install make
     clear
     ;;
@@ -235,7 +236,6 @@ prerequisites() {
 }
 
 tools() {
-    clear
     cd ~
     echo "Which categories of tools do you want to install ?"
     echo
@@ -255,11 +255,11 @@ tools() {
     case $answer in 
 
     1)
-    apt-get install -y amap arp-scan bing-ip2hosts braa cisco-torch copy-router-config copy-router-config dmitry nmap dnsenum dnsmap dnsrecon dnstracer dnswalk dotdotpwn enum4linux enumiax eyewitness exploitdb fierce firewalk goofile hping3 ismtp intrace ident-user-enum inspy lbd legion maltego masscan metagoofil nbtscan-unixwiz nikto nmap osrframework p0f parsero recon-ng set smbmap smtp-user-enum snmpcheck sslsplit  sublist3r thc-ipv6  tlssled twofi unicornscan urlcrazy wireshark xplico 
+    apt-get install -y amap arp-scan bing-ip2hosts braa cisco-torch copy-router-config copy-router-config dmitry nmap dnsenum dnsmap dnsrecon dnstracer dnswalk dotdotpwn enum4linux enumiax eyewitness exploitdb fierce firewalk goofile hping3 ismtp intrace ident-user-enum inspy lbd  maltego masscan metagoofil nbtscan-unixwiz nikto nmap osrframework p0f parsero recon-ng set smbmap smtp-user-enum snmpcheck sslsplit  sublist3r thc-ipv6   twofi unicornscan urlcrazy wireshark  
     ;;
 
     2) 
-    apt-get install -y bed cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch copy-router-config doona dotdotpwn greenbone-security-assistant jsql lynis nmap ohrwurm openvas-scanner oscanner sfuzz sidguesser siparmyknife sqlmap sqlninja sqlsus thc-ipv6 tnscmd10g unix-privesc-check yersinia
+    apt-get install -y bed cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch copy-router-config doona dotdotpwn greenbone-security-assistant jsql-injection lynis nmap ohrwurm openvas-scanner oscanner sfuzz sidguesser siparmyknife sqlmap sqlninja sqlsus thc-ipv6 tnscmd10g unix-privesc-check yersinia
     ;;
 
     3)
@@ -267,7 +267,7 @@ tools() {
     ;;
 
     4) 
-    apt-get install -y apache-users burpsuite cutycapt davtest dirb dirbuster gobuster hurl jboss-autopwn joomscan jsql nikto padbuster paros parsero plecost recon-ng skipfish sqlmap sqlninja sqlsus uniscan webscarab websploit wfuzz xsser zaproxy
+    apt-get install -y apache-users burpsuite cutycapt davtest dirb dirbuster gobuster hurl jboss-autopwn joomscan jsql-injection nikto padbuster paros parsero plecost recon-ng skipfish sqlmap sqlninja sqlsus uniscan webscarab websploit wfuzz xsser zaproxy
     
     ;;
 
@@ -280,21 +280,24 @@ tools() {
     ;;
 
     7)
-    apt-get install -y casefile cherrytree cutycapt dos2unix dradis metagoofil nipper-ng pipal
+    apt-get install -y casefile  cutycapt dos2unix  metagoofil nipper-ng pipal
     ;;
 
-    8) 
-    apt-get install -y armitage backdoor-factory beef cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch commix crackle commix exploitdb jboss-autopwn linux-exploit-suggester routersploit set shellnoob sqlmap thc-ipv6 yersinia beef-xss    
+    8)
+    if ! [ -x "$(command -v msfconsole)" ]; then 
     cd /tmp
     curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall
     chmod +x msfinstall
     ./msfinstall
-    db_status
-    msfdb init
+    cd ~
+    apt-get install -y  armitage backdoor-factory beef kali-tools-crypto-stego kali-tools-gpu cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch commix crackle commix exploitdb jboss-autopwn linux-exploit-suggester routersploit set shellnoob sqlmap thc-ipv6 yersinia beef-xss    
+    else 
+    apt-get install -y  armitage backdoor-factory beef kali-tools-crypto-stego kali-tools-gpu cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch commix crackle commix exploitdb jboss-autopwn linux-exploit-suggester routersploit set shellnoob sqlmap thc-ipv6 yersinia beef-xss    
+    fi
     ;;
 
     9)
-    apt-get install -y binwalk bulk-extractor chntpw dc3dd ddrescue dumpzilla extundelete foremost galleta guymager p0f pdf-parser pdfid xplico
+    apt-get install -y binwalk  chntpw dc3dd ddrescue dumpzilla extundelete foremost galleta guymager p0f pdf-parser pdfid 
     ;;
 
     10) 
@@ -317,7 +320,7 @@ tools() {
     apt install nodejs npm 
     snap install atom
     snap install discord 
-    snap install sublime-text
+    snap install --classic sublime-text
     snap install spotify 
     snap install --classic code
     ;;
@@ -328,12 +331,29 @@ tools() {
     exit 0
     ;;
 
-    0) 
-    apt-get install -y amap arp-scan bing-ip2hosts braa cisco-torch copy-router-config copy-router-config dmitry nmap dnsenum dnsmap dnsrecon dnstracer dnswalk dotdotpwn enum4linux enumiax eyewitness exploitdb fierce firewalk goofile hping3 ismtp intrace ident-user-enum inspy lbd legion maltego masscan metagoofil nbtscan-unixwiz nikto nmap osrframework p0f parsero recon-ng set smbmap smtp-user-enum snmpcheck sslsplit  sublist3r thc-ipv6  tlssled twofi unicornscan urlcrazy wireshark xplico bed cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch copy-router-config doona dotdotpwn greenbone-security-assistant jsql lynis nmap ohrwurm openvas-scanner oscanner sfuzz sidguesser siparmyknife sqlmap sqlninja sqlsus thc-ipv6 tnscmd10g unix-privesc-check yersinia aircrack-ng asleap bluelog blueranger bluesnarfer bully cowpatty crackle eapmd5pass fern-wifi-cracker  hostapd-wpe kalibrate-rtl kismet mdk3  mfterm multimon-ng pixiewps reaver redfang rtlsdr-scanner spooftooph wifi-honey  wifite apache-users burpsuite cutycapt davtest dirb dirbuster gobuster hurl jboss-autopwn joomscan jsql nikto padbuster paros parsero plecost recon-ng skipfish sqlmap sqlninja sqlsus uniscan webscarab websploit wfuzz xsser zaproxy bettercap nodejs npm burpsuite dnschef fiked hamster-sidejack hexinject iaxflood inviteflood ismtp isr-evilgrade isr-evilgrade mitmproxy ohrwurm protos-sip rebind responder rtpbreak rtpinsertsound rtpmixsound sctpscan siparmyknife sipp sipvicious sniffjoke sslsplit thc-ipv6 voiphopper webscarab wifi-honey wireshark xspy yersinia zaproxy cryptcat cymothoa dbd dns2tcp httptunnel nishang polenum powersploit pwnat ridenum sbd webshells weevely cherrytree cutycapt dos2unix dradis metagoofil nipper-ng pipal armitage backdoor-factory beef cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch commix crackle commix exploitdb jboss-autopwn linux-exploit-suggester routersploit set shellnoob sqlmap thc-ipv6 yersinia beef-xss binwalk bulk-extractor chntpw dc3dd ddrescue dumpzilla extundelete foremost galleta guymager p0f pdf-parser pdfid xplico dhcpig iaxflood inviteflood ipv6-toolkit mdk3 reaver rtpflood slowhttptest t50 termineter thc-ipv6 thc-ssl-dos brutespray burpsuite cewl chntpw cisco-auditing-tool cmospwd crowbar crunch gpp-decrypt hash-identifier hashcat hashid hydra john johnny maskprocessor multiforcer ncrack oclgausscrack pack patator polenum rainbowcrack rcracki-mt rsmangler statsprocessor seclists thc-pptp-bruter truecrack webscarab wordlists zaproxy apktool dex2jar edb-debugger javasnoop jdim ollydbg smali valgrind yara android-sdk apktool arduino dex2jar sakis3g smali
+    0)
+    if ! [ -x "$(command -v msfconsole)" ]; then
+    cd /tmp
+    curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall
+    chmod +x msfinstall
+    ./msfinstall
+    db_status
+    msfdb init
+    cd ~ 
+    apt-get install -y  amap nodejs npm arp-scan bing-ip2hosts braa cisco-torch copy-router-config copy-router-config dmitry nmap dnsenum dnsmap dnsrecon dnstracer dnswalk dotdotpwn enum4linux enumiax eyewitness exploitdb fierce firewalk goofile hping3 ismtp intrace ident-user-enum inspy lbd  maltego masscan metagoofil nbtscan-unixwiz nikto nmap osrframework p0f parsero recon-ng set smbmap smtp-user-enum snmpcheck sslsplit  sublist3r thc-ipv6   twofi unicornscan urlcrazy wireshark  bed cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch copy-router-config doona dotdotpwn greenbone-security-assistant lynis nmap ohrwurm openvas-scanner oscanner sfuzz sidguesser siparmyknife sqlmap sqlninja sqlsus thc-ipv6 tnscmd10g unix-privesc-check yersinia aircrack-ng asleap bluelog blueranger bluesnarfer bully cowpatty crackle eapmd5pass fern-wifi-cracker  hostapd-wpe kalibrate-rtl kismet mdk3  mfterm multimon-ng pixiewps reaver redfang rtlsdr-scanner spooftooph wifi-honey  wifite apache-users burpsuite cutycapt davtest dirb dirbuster gobuster hurl jboss-autopwn joomscan nikto padbuster paros parsero plecost recon-ng skipfish sqlmap kali-tools-crypto-stego kali-tools-gpu sqlninja sqlsus uniscan webscarab websploit wfuzz xsser zaproxy bettercap nodejs npm burpsuite dnschef fiked hamster-sidejack hexinject iaxflood inviteflood ismtp isr-evilgrade isr-evilgrade mitmproxy ohrwurm protos-sip rebind responder rtpbreak rtpinsertsound rtpmixsound sctpscan siparmyknife sipp sipvicious sniffjoke sslsplit thc-ipv6 voiphopper webscarab wifi-honey wireshark xspy yersinia zaproxy cryptcat cymothoa dbd dns2tcp httptunnel nishang polenum powersploit pwnat ridenum sbd webshells weevely  cutycapt dos2unix  metagoofil nipper-ng pipal armitage backdoor-factory beef cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch commix crackle commix exploitdb jboss-autopwn linux-exploit-suggester routersploit set shellnoob sqlmap thc-ipv6 yersinia beef-xss binwalk  chntpw dc3dd ddrescue dumpzilla extundelete foremost galleta guymager p0f pdf-parser pdfid  dhcpig iaxflood inviteflood ipv6-toolkit mdk3 reaver rtpflood slowhttptest t50 termineter thc-ipv6 thc-ssl-dos brutespray burpsuite cewl chntpw cisco-auditing-tool cmospwd crowbar crunch gpp-decrypt hash-identifier hashcat hashid hydra john johnny maskprocessor multiforcer ncrack oclgausscrack pack patator polenum rainbowcrack rcracki-mt rsmangler statsprocessor seclists thc-pptp-bruter truecrack webscarab wordlists zaproxy apktool dex2jar edb-debugger javasnoop jdim ollydbg smali valgrind yara android-sdk apktool arduino dex2jar sakis3g smali
+    snap install atom
     snap install discord 
-    snap install sublime-text
+    snap install --classic sublime-text
     snap install spotify 
-    snap install --classic codeno
+    snap install --classic code
+    else 
+    apt-get install -y  amap nodejs npm arp-scan bing-ip2hosts braa cisco-torch copy-router-config copy-router-config dmitry nmap dnsenum dnsmap dnsrecon dnstracer dnswalk dotdotpwn enum4linux enumiax eyewitness exploitdb fierce firewalk goofile hping3 ismtp intrace ident-user-enum inspy lbd  maltego masscan metagoofil nbtscan-unixwiz nikto nmap osrframework p0f parsero recon-ng set smbmap smtp-user-enum snmpcheck sslsplit  sublist3r thc-ipv6   twofi unicornscan urlcrazy wireshark  bed cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch copy-router-config doona dotdotpwn greenbone-security-assistant lynis nmap ohrwurm openvas-scanner oscanner sfuzz sidguesser siparmyknife sqlmap sqlninja sqlsus thc-ipv6 tnscmd10g unix-privesc-check yersinia aircrack-ng asleap bluelog blueranger bluesnarfer bully cowpatty crackle eapmd5pass fern-wifi-cracker  hostapd-wpe kalibrate-rtl kismet mdk3  mfterm multimon-ng pixiewps reaver redfang rtlsdr-scanner spooftooph wifi-honey  wifite apache-users burpsuite cutycapt davtest dirb dirbuster gobuster hurl jboss-autopwn joomscan nikto padbuster paros parsero plecost recon-ng skipfish sqlmap kali-tools-crypto-stego kali-tools-gpu sqlninja sqlsus uniscan webscarab websploit wfuzz xsser zaproxy bettercap nodejs npm burpsuite dnschef fiked hamster-sidejack hexinject iaxflood inviteflood ismtp isr-evilgrade isr-evilgrade mitmproxy ohrwurm protos-sip rebind responder rtpbreak rtpinsertsound rtpmixsound sctpscan siparmyknife sipp sipvicious sniffjoke sslsplit thc-ipv6 voiphopper webscarab wifi-honey wireshark xspy yersinia zaproxy cryptcat cymothoa dbd dns2tcp httptunnel nishang polenum powersploit pwnat ridenum sbd webshells weevely  cutycapt dos2unix  metagoofil nipper-ng pipal armitage backdoor-factory beef cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch commix crackle commix exploitdb jboss-autopwn linux-exploit-suggester routersploit set shellnoob sqlmap thc-ipv6 yersinia beef-xss binwalk  chntpw dc3dd ddrescue dumpzilla extundelete foremost galleta guymager p0f pdf-parser pdfid  dhcpig iaxflood inviteflood ipv6-toolkit mdk3 reaver rtpflood slowhttptest t50 termineter thc-ipv6 thc-ssl-dos brutespray burpsuite cewl chntpw cisco-auditing-tool cmospwd crowbar crunch gpp-decrypt hash-identifier hashcat hashid hydra john johnny maskprocessor multiforcer ncrack oclgausscrack pack patator polenum rainbowcrack rcracki-mt rsmangler statsprocessor seclists thc-pptp-bruter truecrack webscarab wordlists zaproxy apktool dex2jar edb-debugger javasnoop jdim ollydbg smali valgrind yara android-sdk apktool arduino dex2jar sakis3g smali
+    snap install atom
+    snap install discord 
+    snap install --classic sublime-text
+    snap install spotify 
+    snap install --classic code
+    fi
     ;;
     
     *) 
